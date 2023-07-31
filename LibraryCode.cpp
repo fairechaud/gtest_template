@@ -1,6 +1,15 @@
 #include "LibraryCode.hpp"
+#include <vector>
+#include <algorithm>
 
-int sum(int a, int b)
+bool isThisPositive(int x)
 {
-    return a+b;
+    return x >= 0;
 }
+
+int countOfPositives(std::vector<int> const& inputVector)
+{
+    return std::count_if(inputVector.begin(), inputVector.end(), isThisPositive);
+}
+
+

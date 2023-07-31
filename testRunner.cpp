@@ -1,9 +1,41 @@
+#include <iostream>
 #include <gtest/gtest.h>
 #include "LibraryCode.hpp"
+#include <vector>
 
-TEST(TestSample, TestAddition)
+void PrintResults(int exp, int act)
 {
-    ASSERT_EQ(2, sum(1,1));
+    std::cout << "Expected: " << exp << "\n Actual: " << act << '\n';
+}
+
+TEST(TestCountPositives, All6Positives)
+{
+    //Arrange
+    std::vector<int> inputVector{ 1,2,3,4,5,6 };
+    //Act
+    int count = countOfPositives(inputVector);
+    //Assert    
+    ASSERT_EQ(6,count);
+}
+
+TEST(TestCountPositives, NoNumbers)
+{
+    //Arrange
+    std::vector<int> inputVector{};
+    //Act
+    int count = countOfPositives(inputVector);
+    //Assert    
+    ASSERT_EQ(0,count);
+}
+
+TEST(TestCountPositives, All6Negatives)
+{
+    //Arrange
+    std::vector<int> inputVector{ -1,-2,-3,-4,-5,-6};
+    //Act
+    int count = countOfPositives(inputVector);
+    //Assert    
+    ASSERT_EQ(0,count);
 }
 
 int main (int argc, char **argv){
