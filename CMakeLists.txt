@@ -1,22 +1,13 @@
 cmake_minimum_required(VERSION 3.13)
-set(CMAKE_CXX_STANDARD 11)
-project(googletest_sample)
-#get gtest
-include(FetchContent)
-FetchContent_Declare(googletest
-            GIT_REPOSITORY https://github.com/google/googletest
-            GIT_TAG release-1.11.0)
-FetchContent_GetProperties(googletest)
+project(GoogleTestSample)
 
-if(NOT gtest_POPULATED)
-    FetchContent_Populate(googletest)
-    add_subdirectory(${googletest_SOURCE_DIR} ${googletesttest_BUILD_DIR})
-endif()
+find_package(GTest REQUIRED)
+message("GTEST_INCLUDE_DIRS = ${GTEST_INCLUDE_DIRS}")
 
-add_library(sumLibrary STATIC LibraryCode.cpp)
+add_library(commonLibrary LibraryCode.cpp)
 
-add_executable(mainApp main.cpp)
-target_link_libraries(mainApp sumLibrary)
+add_executable(myExecutable main.cpp)
+target_link_libraries(myExecutable commonLibrary)
 
-add_executable(testRunner test.cpp)
-target_link_libraries(testRunner sumLibrary gtest_main gmock_main)
+add_executable(testRunner testRunner.cpp)
+target_link_libraries(testRunner commonLibrary ${GTEST_LIBRARIES} pthread)

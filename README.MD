@@ -1,8 +1,8 @@
 # Template for googleTesting C++ projects
 
-## NOTE: 
+## NOTE: This branch requires the googletest repo to be cloned to /usr/lib. This avoids having to pull all dependencies into /build and allows for reusability
 
-manually create build folder, it was not included for dependency pulling issues
+### Steps involved
 
 + Install cmake with:
 
@@ -10,12 +10,29 @@ manually create build folder, it was not included for dependency pulling issues
 sudo apt install cmake
 ```
 
-+ Check the CMakeLists.txt file for the logic behind pulling repo for googletest, i.e. :
++ Clone googletest to root:
 
 ```
-include(FetchContent)
-FetchContent_Declare(googletest
-            GIT_REPOSITORY https://github.com/google/googletest
-            GIT_TAG release-1.11.0)
-FetchContent_GetProperties(googletest)
+~$ git clone git@github.com:google/googletest.git
+```
+
++ Build with CMake:
+
+```
+~$ cd googletest-main
+~/googletest-main$ sudo cmake CMakeLists.txt
+~/googletest-main$ sudo make
+```
+
++ Copy libs to /usr/...
+
+```
+~/googletest-main$ cd lib
+~/googletest-main/lib$ sudo cp * /usr/lib
+~/googletest-main/lib$ cd ..
+~/googletest-main$ cd googlemock/include
+~/googletest-main/googlemock/include$ sudo cp -r gmock /usr/local/include
+~/googletest-main/googlemock/include$ cd ~/googletest-main/googletest/include
+~/googletest-main/googlemock/include$ sudo cp -r gtest /usr/local/include
+
 ```
