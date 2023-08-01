@@ -3,26 +3,6 @@
 #include <stdexcept>
 #include "LibraryCode.hpp"
 
-/*
-    THIS SECTION DECLARES A REUSABLE PIECE OF CODE THAT WILL
-    HELP SETUP SIMILAR TESTCASES ARRANGE PARTS. THIS IS CALLED A 
-    TEST FIXTURE
-*/
-
-class AccountTestFixture: public testing::Test
-{
-    public:
-        void SetUp() override;
-    protected:
-        Account account;
-
-};
-
-void AccountTestFixture::SetUp()
-{
-    std::cout << "SetUp has been called\n";
-    account.deposit(10.5);
-}
 
 TEST(AccountTest, TestEmptyAccount)
 {
@@ -33,28 +13,73 @@ TEST(AccountTest, TestEmptyAccount)
   ASSERT_EQ(0, balance);
 }
 
+class AccountTestFixture: public testing::Test
+{
+  public:
+   AccountTestFixture();
+   virtual ~AccountTestFixture();
+   void SetUp() override;
+   void TearDown() override;
+   static void SetUpTestCase();
+   static void TearDownTestCase();
+  protected:
+   Account account;
+};
+
+AccountTestFixture::AccountTestFixture()
+{
+  std::cout << "Constructor called\n";
+}
+
+AccountTestFixture::~AccountTestFixture()
+{
+  std::cout << "Destructor called\n";
+}
+
+void AccountTestFixture::SetUpTestCase()
+{
+  std::cout << "SetUpTestCase called\n";
+}
+
+void AccountTestFixture::TearDownTestCase()
+{
+  std::cout << "TearDownTestCase called\n";
+}
+
+void AccountTestFixture::SetUp()
+{
+    std::cout << "SetUp called\n";
+    account.deposit(10.5);
+}
+
+void AccountTestFixture::TearDown()
+{
+    std::cout << "TearDown called\n";
+}
+
+
 TEST_F(AccountTestFixture, TestDeposit)
 { 
+  std::cout << "Test body\n";
   ASSERT_EQ(10.5, account.getBalance());
 }
 
 
-TEST_F(AccountTestFixture, TestWithdrawOK)
-{ 
+TEST_F(AccountTestFixture,  TestWithdrawOK)
+{
   account.withdraw(3);
 
   ASSERT_EQ(7.5, account.getBalance());
 }
 
 
-TEST_F(AccountTestFixture, TestWithdrawInsufficientFunds)
+TEST_F(AccountTestFixture,  TestWithdrawInsufficientFunds)
 {
- 
   ASSERT_THROW(account.withdraw(300), std::runtime_error);
 }
 
 
-TEST_F(AccountTestFixture, TestTransferOK)
+TEST_F(AccountTestFixture,  TestTransferOK)
 {
   Account to;
 
@@ -65,10 +90,8 @@ TEST_F(AccountTestFixture, TestTransferOK)
 }
 
 
-
-TEST_F(AccountTestFixture, TestTransferInsufficientFunds)
+TEST_F(AccountTestFixture,  TestTransferInsufficientFunds)
 {
-
   Account to;
 
   ASSERT_THROW(account.transfer(to, 200), std::runtime_error);
