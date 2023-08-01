@@ -1,13 +1,9 @@
 #pragma once
-
-class Account
+class Validator
 {
- public:
-   Account();
-   void deposit(double sum);
-   void withdraw(double sum);
-   double getBalance() const;
-   void transfer(Account &to, double sum);
- private:
-   double mBalance;
+public:
+    Validator(int low, int high);
+    bool inRange(int valueToTest) const;
+private:
+    int mLow, mHigh;
 };

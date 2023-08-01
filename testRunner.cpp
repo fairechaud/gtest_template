@@ -1,101 +1,41 @@
 #include <iostream>
 #include <gtest/gtest.h>
-#include <stdexcept>
 #include "LibraryCode.hpp"
+// Validator(5, 10)
+// 4, 5, 6, 7, 9, 10, 11 
 
-
-TEST(AccountTest, TestEmptyAccount)
+class ValidatorFixture : public testing::TestWithParam<std::tuple<int, bool>>
 {
-  Account account;
-
-  double balance = account.getBalance();
-
-  ASSERT_EQ(0, balance);
-}
-
-class AccountTestFixture: public testing::Test
-{
-  public:
-   AccountTestFixture();
-   virtual ~AccountTestFixture();
-   void SetUp() override;
-   void TearDown() override;
-   static void SetUpTestCase();
-   static void TearDownTestCase();
-  protected:
-   Account account;
+public:
+protected:
+ Validator mValidator{5, 10};
 };
 
-AccountTestFixture::AccountTestFixture()
+TEST_P(ValidatorFixture, TestInRange)
 {
-  std::cout << "Constructor called\n";
+  std::tuple<int, bool> tuple = GetParam();
+
+  int param = std::get<0>(tuple);
+  bool expectedValue = std::get<1>(tuple);
+
+  std::cout << "param = " << param << " expected value = " << expectedValue << '\n';
+
+  bool isInside = mValidator.inRange(param);
+
+  ASSERT_EQ(expectedValue, isInside);
 }
 
-AccountTestFixture::~AccountTestFixture()
-{
-  std::cout << "Destructor called\n";
-}
-
-void AccountTestFixture::SetUpTestCase()
-{
-  std::cout << "SetUpTestCase called\n";
-}
-
-void AccountTestFixture::TearDownTestCase()
-{
-  std::cout << "TearDownTestCase called\n";
-}
-
-void AccountTestFixture::SetUp()
-{
-    std::cout << "SetUp called\n";
-    account.deposit(10.5);
-}
-
-void AccountTestFixture::TearDown()
-{
-    std::cout << "TearDown called\n";
-}
-
-
-TEST_F(AccountTestFixture, TestDeposit)
-{ 
-  std::cout << "Test body\n";
-  ASSERT_EQ(10.5, account.getBalance());
-}
-
-
-TEST_F(AccountTestFixture,  TestWithdrawOK)
-{
-  account.withdraw(3);
-
-  ASSERT_EQ(7.5, account.getBalance());
-}
-
-
-TEST_F(AccountTestFixture,  TestWithdrawInsufficientFunds)
-{
-  ASSERT_THROW(account.withdraw(300), std::runtime_error);
-}
-
-
-TEST_F(AccountTestFixture,  TestTransferOK)
-{
-  Account to;
-
-  account.transfer(to, 2);
-  
-  ASSERT_EQ(8.5, account.getBalance());
-  ASSERT_EQ(2, to.getBalance());
-}
-
-
-TEST_F(AccountTestFixture,  TestTransferInsufficientFunds)
-{
-  Account to;
-
-  ASSERT_THROW(account.transfer(to, 200), std::runtime_error);
-}
+INSTANTIATE_TEST_CASE_P(InRangeTrue, ValidatorFixture, testing::Values(
+                                                          std::make_tuple(-50, false),
+                                                          std::make_tuple(4, false),
+                                                          std::make_tuple(5, true),
+                                                          std::make_tuple(6, true),
+                                                          std::make_tuple(7, true),
+                                                          std::make_tuple(9, true),
+                                                          std::make_tuple(10, true),
+                                                          std::make_tuple(11, false),
+                                                          std::make_tuple(100, false)
+));
 
 int main(int argc, char **argv)
 {
