@@ -1,15 +1,29 @@
 #include "LibraryCode.hpp"
-#include <vector>
-#include <algorithm>
+#include <stdexcept>
 
-bool isThisPositive(int x)
+Account::Account() : mBalance{0}
 {
-    return x >= 0;
 }
 
-int countOfPositives(std::vector<int> const& inputVector)
+void Account::deposit(double sum)
 {
-    return std::count_if(inputVector.begin(), inputVector.end(), isThisPositive);
+    mBalance += sum;
 }
 
+void Account::withdraw(double sum)
+{
+    if(mBalance < sum)
+    {
+        throw std::runtime_error("Insufficient funds");
+    }
+    mBalance -= sum;
+}
+
+double Account::getBalance() const { return mBalance; }
+
+void Account::transfer(Account &to, double sum)
+{
+    withdraw(sum); //will throw an error if not enough
+    to.deposit(sum);
+}
 

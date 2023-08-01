@@ -1,44 +1,81 @@
 #include <iostream>
 #include <gtest/gtest.h>
+#include <stdexcept>
 #include "LibraryCode.hpp"
-#include <vector>
 
-void PrintResults(int exp, int act)
+/*
+    THIS SECTION DECLARES A REUSABLE PIECE OF CODE THAT WILL
+    HELP SETUP SIMILAR TESTCASES ARRANGE PARTS. THIS IS CALLED A 
+    TEST FIXTURE
+*/
+
+class AccountTestFixture: public testing::Test
 {
-    std::cout << "Expected: " << exp << "\n Actual: " << act << '\n';
+    public:
+        void SetUp() override;
+    protected:
+        Account account;
+
+};
+
+void AccountTestFixture::SetUp()
+{
+    std::cout << "SetUp has been called\n";
+    account.deposit(10.5);
 }
 
-TEST(TestCountPositives, All6Positives)
+TEST(AccountTest, TestEmptyAccount)
 {
-    //Arrange
-    std::vector<int> inputVector{ 1,2,3,4,5,6 };
-    //Act
-    int count = countOfPositives(inputVector);
-    //Assert    
-    ASSERT_EQ(6,count);
+  Account account;
+
+  double balance = account.getBalance();
+
+  ASSERT_EQ(0, balance);
 }
 
-TEST(TestCountPositives, NoNumbers)
-{
-    //Arrange
-    std::vector<int> inputVector{};
-    //Act
-    int count = countOfPositives(inputVector);
-    //Assert    
-    ASSERT_EQ(0,count);
+TEST_F(AccountTestFixture, TestDeposit)
+{ 
+  ASSERT_EQ(10.5, account.getBalance());
 }
 
-TEST(TestCountPositives, All6Negatives)
-{
-    //Arrange
-    std::vector<int> inputVector{ -1,-2,-3,-4,-5,-6};
-    //Act
-    int count = countOfPositives(inputVector);
-    //Assert    
-    ASSERT_EQ(0,count);
+
+TEST_F(AccountTestFixture, TestWithdrawOK)
+{ 
+  account.withdraw(3);
+
+  ASSERT_EQ(7.5, account.getBalance());
 }
 
-int main (int argc, char **argv){
+
+TEST_F(AccountTestFixture, TestWithdrawInsufficientFunds)
+{
+ 
+  ASSERT_THROW(account.withdraw(300), std::runtime_error);
+}
+
+
+TEST_F(AccountTestFixture, TestTransferOK)
+{
+  Account to;
+
+  account.transfer(to, 2);
+  
+  ASSERT_EQ(8.5, account.getBalance());
+  ASSERT_EQ(2, to.getBalance());
+}
+
+
+
+TEST_F(AccountTestFixture, TestTransferInsufficientFunds)
+{
+
+  Account to;
+
+  ASSERT_THROW(account.transfer(to, 200), std::runtime_error);
+}
+
+int main(int argc, char **argv)
+{
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
