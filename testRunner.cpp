@@ -15,11 +15,18 @@ TEST(AccountTest, TestEmptyAccount)
 
 class AccountTestFixture: public testing::Test
 {
+  // Fixture flow of execution:
+  // 1. Fixture Constructor
+  // 2. SetUp
+  // 3. Test body
+  // 4. TearDown
+  // 5. Destructor
+
   public:
-   AccountTestFixture();
-   virtual ~AccountTestFixture();
-   void SetUp() override;
-   void TearDown() override;
+   AccountTestFixture(); //constructor is preferred because you can use consts
+   virtual ~AccountTestFixture(); //const/dest will always get called
+   void SetUp() override; // SetUp used when calling virtual methods
+   void TearDown() override; // TearDown used when throwing exceptions
    static void SetUpTestCase();
    static void TearDownTestCase();
   protected:
