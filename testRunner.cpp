@@ -15,6 +15,20 @@ TEST(AccountTest, TestEmptyAccount)
 
 class AccountTestFixture: public testing::Test
 {
+  /*
+    FIXTURES help write better tests by allowing you to reuse certain 
+    pieces of code overriding SetUp & TearDown functions in every single
+    test.
+
+    You use them when you have very similar SetUp/TearDown instructions 
+    across a lot of different tests.
+
+    Test setup -> SetUp()
+    Test cleanup -> TearDown()
+
+    A new fixture is created for each test
+  */
+
   // Fixture flow of execution:
   // 1. Fixture Constructor
   // 2. SetUp
