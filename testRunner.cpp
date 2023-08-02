@@ -4,6 +4,18 @@
 // Validator(5, 10)
 // 4, 5, 6, 7, 9, 10, 11 
 
+/*
+  PARAMETERIZED tests are used to generate tests that have the SAME body
+  but DIFFERENT input values
+
+  When you generate a test, the expected output values can be packed together 
+  with the input values using complex data structures, 
+  e.g. create a tuple that packs the valueUnderTest and the result expected.
+
+  Generators can be used to generate input values for the test and evaluate each
+  pair of output/input in a range.
+*/
+
 class ValidatorFixture : public testing::TestWithParam<std::tuple<int, bool>>
 {
 public:
